@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonic Music Player</title>
+    <style>
+        :root {
+            --bg-black: #000000;
+            --card-yellow: #f0a519;
+            --card-red: #940424;
+            --card-teal: #33a88e;
+            --card-orange: #e64a19;
+            --card-gold: #f2a613;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: white;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-section {
+            width: 100%;
+            max-width: 500px;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin: 0;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        /* Bento Grid Layout */
+        .player-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            grid-template-areas: 
+                "hero hero"
+                "card1 sidebar"
+                "card2 sidebar"
+                "card3 sidebar"
+                "card4 sidebar";
+            gap: 12px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .card {
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .card:active { transform: scale(0.98); }
+
+        /* Grid Area Assignments */
+        .hero { grid-area: hero; height: 100px; }
+        .sidebar { grid-area: sidebar; height: 100%; min-height: 400px; }
+
+        /* Colors */
+        .yellow { background-color: var(--card-yellow); }
+        .red { background-color: var(--card-red); }
+        .teal { background-color: var(--card-teal); }
+        .orange { background-color: var(--card-orange); }
+        .gold { background-color: var(--card-gold); }
+
+        /* Typography */
+        h2, h3 { margin: 0; font-size: 1.4rem; font-weight: 700; }
+        p { margin: 2px 0; font-size: 0.9rem; opacity: 0.9; }
+
+        /* Waveform Decor */
+        .waveform {
+            width: 100%;
+            height: 30px;
+            background: rgba(255,255,255,0.2);
+            mask-image: linear-gradient(to right, black 50%, transparent); /* Simplification */
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* Sidebar Specifics */
+        .poster-box {
+            background: white;
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-10deg) translateY(10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .poster-box span { color: black; font-weight: 900; font-size: 2rem; transform: rotate(10deg); }
+
+        .player-controls {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 40px;
+            color: black;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .progress { height: 3px; background: #ddd; width: 100%; position: relative; }
+        .progress::after { content: ''; position: absolute; left: 20%; width: 6px; height: 6px; background: black; border-radius: 50%; top: -2px; }
+
+        .btns { display: flex; justify-content: space-around; font-size: 1.2rem; }
+
+        .play-icon { font-size: 1.5rem; margin-top: 10px; }
+
+        /* Hidden YT Player */
+        #player { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="logo-section">
+        <h1 class="logo">HARMONIC</h1>
+    </div>
+
+    <div id="player"></div>
+
+    <main class="player-grid">
+        <div class="card hero yellow" onclick="playSong('kJQP7kiw5Fk')">
+            <div>
+                <h2>Despacito</h2>
+                <p>Luis Fonsi</p>
+            </div>
+            <div class="waveform"></div>
+        </div>
+
+        <div class="card red" onclick="playSong('fRh_vgS2dFE')">
+            <h3>Sorry</h3>
+            <p>Justin Bieber</p>
+            <div class="play-icon">▶</div>
+        </div>
+
+        <div class="card teal" onclick="playSong('RgKAFK5djSk')">
+            <h3>See You Again</h3>
+            <p>Wiz Khalifa</p>
+            <div class="play-icon">▶</div>
+        </div>
+
+        <div class="card sidebar yellow">
+            <div class="poster-box"><span>poster</span></div>
+            <div class="player-controls">
+                <div class="progress"></div>
+                <div class="btns">
+                    <span>⏮</span> <span onclick="stopVideo()">⏸</span> <span>⏭</span>
+                </div>
+            </div>
+            <h3 style="margin-top:15px">Now Playing</h3>
+            <p id="current-title">Select a song</p>
+        </div>
+
+        <div class="card orange" onclick="playSong('kJQP7kiw5Fk')">
+            <h3>Despacito</h3>
+            <p>Remix</p>
+            <div class="play-icon">▶</div>
+        </div>
+
+        <div class="card gold" onclick="playSong('fRh_vgS2dFE')">
+            <h3>Sorry</h3>
+            <p>Artist</p>
+            <div class="play-icon">▶</div>
+        </div>
+    </main>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        let player;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function playSong(id) {
+            player.loadVideoById(id);
+            // Update the UI text
+            document.getElementById('current-title').innerText = "Playing ID: " + id;
+        }
+
+        function stopVideo() {
+            player.pauseVideo();
+        }
+
+        function onPlayerStateChange(event) {
+            // Optional: Handle what happens when a song ends
+        }
+    </script>
+</body>
+</html>
